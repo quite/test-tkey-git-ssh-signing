@@ -19,7 +19,7 @@ set -eu
 # To make git use tkey-ssh-agent for signing, the SSH_AUTH_SOCK env
 # variable has to point to its socket. You can try showing the pubkey:
 #SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock ssh-add -L
-# Try committing:
+# Try committing, touching the TKey when it flashes green:
 #SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock git commit -S -m msg
 #git show
 
