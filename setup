@@ -1,15 +1,19 @@
 #!/bin/bash
 set -eu
 
-# git clone https://github.com/tillitis/tkey-ssh-agent.git
-# cd tkey-ssh-agent
-# sudo make install
-# sudo make reload-rules
-# systemctl --user enable --now tkey-ssh-agent
-# # Try showing the pubkey, you should get a pinentry for USS when loading device app:
-# SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock ssh-add -L
-# # Commit
-# SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock git commit -S -m msg
+# Get the agent installed and running:
+#git clone https://github.com/tillitis/tkey-ssh-agent.git
+#cd tkey-ssh-agent
+#sudo make install
+#sudo make reload-rules
+#systemctl --user enable --now tkey-ssh-agent
+
+# Now run this setup script in your repo
+# Try showing the pubkey, you should get a pinentry for a USS when loading device app:
+#SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock ssh-add -L
+# Try committing
+#SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock git commit -S -m msg
+#git show
 
 cd "${0%/*}"
 
@@ -24,7 +28,7 @@ fi
 git config --local commit.gpgsign true
 git config --local tag.gpgsign true
 git config --local gpg.format ssh
-git config --local user.signingkey $pubkey
+git config --local user.signingkey "$pubkey"
 git config --local log.showSignature true
 git config --local gpg.ssh.allowedSignersFile allowed_signers
 
