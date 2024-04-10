@@ -1,0 +1,37 @@
+#!/bin/bash
+set -eu
+
+# git clone https://github.com/tillitis/tkey-ssh-agent.git
+# cd tkey-ssh-agent
+# sudo make install
+# sudo make reload-rules
+# systemctl --user enable --now tkey-ssh-agent
+# # Try showing the pubkey, you should get a pinentry for USS when loading device app:
+# SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock ssh-add -L
+# # Commit
+# SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock git commit -S -m msg
+
+cd "${0%/*}"
+
+pubkey=$HOME/tkey.pub
+
+export SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock
+
+if [[ ! -e "$pubkey" ]]; then
+  ssh-add -L >"$pubkey"
+fi
+
+git config --local commit.gpgsign true
+git config --local tag.gpgsign true
+git config --local gpg.format ssh
+git config --local user.signingkey $pubkey
+git config --local log.showSignature true
+git config --local gpg.ssh.allowedSignersFile allowed_signers
+
+email=$(git config user.email)
+[[ -n "$email" ]] || exit 1
+
+[[ ! -e allowed_signers ]] && touch allowed_signers
+if ! grep -q "^$email" allowed_signers; then
+  printf '%s namespaces="git" %s\n' "$email" "$(cat "$pubkey")" >>allowed_signers
+fi
