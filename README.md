@@ -9,8 +9,8 @@ systemctl --user enable --now tkey-ssh-agent
 ```
 
 You could of course also run tkey-ssh-agent manually, instead of using
-a systemd user unit. Remember to adjust SSH_AUTH_SOCK everywhere to
-your desired location.
+a systemd user unit. For example like: `tkey-ssh-agent --uss -a $HOME/tkey-agent-sock`.
+Remember to adjust SSH_AUTH_SOCK everywhere to your desired location.
 
 Now run this [./setup](setup) script in your repo. Upon loading the
 device app, you should get a pinentry for inputting a USS, which is
