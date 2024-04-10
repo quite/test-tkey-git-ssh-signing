@@ -8,10 +8,18 @@ set -eu
 #sudo make reload-rules
 #systemctl --user enable --now tkey-ssh-agent
 
-# Now run this setup script in your repo
-# Try showing the pubkey, you should get a pinentry for a USS when loading device app:
+# Now run this ./setup script in your repo. Upon loading the device
+# app, you should get a pinentry for inputting a USS, which is mixed
+# into the private key generated on the TKey. Making the private key
+# be based both on the unique TKey device, and something you know. The
+# script will configure your repos .git/config, including setting
+# user.signingkey to the TKey public key, given your USS. So you're
+# expected to use the same USS next time you commit to this repo.
+
+# To make git use tkey-ssh-agent for signing, the SSH_AUTH_SOCK env
+# variable has to point to its socket. You can try showing the pubkey:
 #SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock ssh-add -L
-# Try committing
+# Try committing:
 #SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock git commit -S -m msg
 #git show
 
@@ -33,7 +41,7 @@ git config --local log.showSignature true
 git config --local gpg.ssh.allowedSignersFile allowed_signers
 
 email=$(git config user.email)
-[[ -n "$email" ]] || exit 1
+[[ -z "$email" ]] && exit 1
 
 [[ ! -e allowed_signers ]] && touch allowed_signers
 if ! grep -q "^$email" allowed_signers; then
