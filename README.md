@@ -16,6 +16,12 @@ The script will configure your repos `.git/config`, including setting
 `user.signingkey` to the TKey public key, given your USS. So you're
 expected to use the same USS next time you commit to this repo.
 
+The script also opportunistically looks up your `git config
+user.email`, and adds you to a `allowed_signers` file, along with the
+public key from the TKey (if your email is not already in that file).
+Since `gpg.ssh.allowedSignersFile` is also set to this file, git can
+verify signatures.
+
 To make git use tkey-ssh-agent for signing, the `SSH_AUTH_SOCK`
 environment variable has to point to its socket. You can try showing
 the pubkey like this:
