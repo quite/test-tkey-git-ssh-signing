@@ -3,13 +3,9 @@ set -eu
 
 cd "${0%/*}"
 
-pubkey=$HOME/tkey.pub
-
 export SSH_AUTH_SOCK=/run/user/$(id -u)/tkey-ssh-agent/sock
 
-if [[ ! -e "$pubkey" ]]; then
-  ssh-add -L >"$pubkey"
-fi
+pubkey="$(ssh-add -L)"
 
 git config --local commit.gpgsign true
 git config --local tag.gpgsign true
@@ -23,5 +19,5 @@ email=$(git config user.email)
 
 [[ ! -e allowed_signers ]] && touch allowed_signers
 if ! grep -q "^$email" allowed_signers; then
-  printf '%s namespaces="git" %s\n' "$email" "$(cat "$pubkey")" >>allowed_signers
+  printf '%s namespaces="git" %s\n' "$email" "$pubkey" >>allowed_signers
 fi
